@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Note</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        footer {
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+        }
+
+        header div h1 {
+            text-align: center;
+        }
+        main div ul li button {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container mt-4">
+        <h1>To do List</h1>
+    </div>
+</header>
+<main>
+    <div class="container mt-4">
+        <div class="input-group">
+            <div id="todoItem" contenteditable="true" class="form-control"></div>
+            <button id="button-add" type="button" class="btn btn-primary"  onclick="addTodo()">Add</button>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <ul id="todoList" class="list-group">
+        </ul>
+    </div>
+</main>
+<footer>
+    <div class="container">
+        @Copyright 2023 MyNote.
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script>
+    //add클릭
+    function addTodo() {
+        var todoItem = document.getElementById('todoItem').innerText;
+        addList(todoItem,true);
+    }
+
+    //local저장
+    function addLocal() {
+        var todoList = document.getElementById('todoList');
+        localStorage.clear();
+        for(var i = 0; i < todoList.children.length; i++){
+            var todo = todoList.children[i].textContent.slice(0,-5);
+            localStorage.setItem('todoList'+i, todo);
+        }
+        console.log(localStorage.length);
+    }
+
+    //화면에뿌리기
+    function addList(todoItem,s) {
+        var todoList = document.getElementById('todoList');
+
+        var item = document.createElement('li');
+        item.innerText = todoItem;
+        item.classList.add('list-group-item');
+        todoList.appendChild(item);
+
+        var clearBtn = document.createElement('li');
+        clearBtn.classList.add('btn','btn-danger');
+        clearBtn.textContent='Clear';
+        clearBtn.addEventListener('click',clearItem);
+
+        item.appendChild(clearBtn);
+
+        document.getElementById('todoItem').innerHTML = '';
+
+        if(s) addLocal();
+
+    }
+
+    //지우기
+    function clearItem(item){
+        item.target.parentElement.remove();
+        addLocal();
+    }
+
+    //로컬에있는거 불러오기
+    function getLocal() {
+        var localCnt = localStorage.length;
+        if(localCnt > 0){
+            for(var i = 0; i < localStorage.length; i++){
+                addList(localStorage.getItem('todoList'+i),false);
+            }
+        }
+    }
+
+    getLocal();
+</script>
+</body>
+</html>
